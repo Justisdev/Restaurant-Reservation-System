@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.kim.restaurantreservation.config.Constant;
@@ -32,8 +33,14 @@ public class ReservationService {
 	
 	public ReservationResponse saveReservation(ReservationRequest reservationRequest) {
 		Reservation reservation	= new Reservation();
-		LocalDateTime now = LocalDateTime.now();
+
 		String reservationId = generateID();
+		
+		if(isInvalidReservedDateValid(reservationRequest.getReservationDatetime()))
+			return new ReservationResponse("Invalid Reservation Date.",reservationId);
+		
+		LocalDateTime now = LocalDateTime.now();
+		
 			reservation.setReservationId(reservationId);
 			reservation.setCustomerName(reservationRequest.getCustomerName());
 			reservation.setEmail(reservationRequest.getEmail());
@@ -108,5 +115,9 @@ public class ReservationService {
 			idBuilder.append("RESV");
 			idBuilder.append(timeNow.format(DateTimeFormatter.ofPattern("yyMMddhhmmssMs")));
 		return idBuilder.toString();
+	}
+	
+	private boolean isInvalidReservedDateValid(LocalDateTime reservedDatetime) {
+		return reservedDatetime.isBefore(LocalDateTime.now());
 	}
 }

@@ -1,0 +1,308 @@
+{
+	"info": {
+		"_postman_id": "e02bc401-1d63-4c8c-9918-56ff32c56308",
+		"name": "Customer Booking Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40403083"
+	},
+	"item": [
+		{
+			"name": "Create New Reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let reservationId = pm.response.json().reservationId;\r",
+							"pm.environment.set(\"reservationId\", reservationId);\r",
+							"\r",
+							"pm.test(\"Status Code is 200\",\r",
+							"function(){\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message is Success.\", ()=>{\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.message).to.be.equal(\"Successfully Inserted.\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerName\": \"Kim\",\r\n    \"phoneNumber\": \"9170239821\",\r\n    \"email\": \"kim@email.com\",\r\n    \"reservationDatetime\": \"2024-12-19T09:14:50\",\r\n    \"guestNumber\": 3,\r\n    \"contactChannel\": \"sms\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Has Reservations.\", ()=>\r",
+							"{\r",
+							"    pm.expect(pm.response.json().length).to.be.not.equal(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation/customerName/Kim",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation",
+						"customerName",
+						"Kim"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is Successfully Cancelled.\", ()=>\r",
+							"{\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.message).to.be.equal(\"Successefully Updated.\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reservationId\": \"{{reservationId}}\",\r\n    \"newReservationDate\": \"2024-12-19T09:14:25\",\r\n    \"newGuestNumber\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation/reservationDateAndGuest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation",
+						"reservationDateAndGuest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Status If Reservation is Updated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Guest Number was Updated.\", ()=>\r",
+							"{\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.guestNumber).to.be.equal(4);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation/reservationId/{{reservationId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation",
+						"reservationId",
+						"{{reservationId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is Successfully Cancelled.\", ()=>\r",
+							"{\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.message).to.be.equal(\"Successefully Cancelled.\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation/cancel?reservationId={{reservationId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation",
+						"cancel"
+					],
+					"query": [
+						{
+							"key": "reservationId",
+							"value": "{{reservationId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Status If Cancelled",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Reservation Id Status is Cancelled.\", ()=>\r",
+							"{\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.status).to.be.equal(false);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/reservation/reservationId/{{reservationId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"reservation",
+						"reservationId",
+						"{{reservationId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
